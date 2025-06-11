@@ -3,10 +3,13 @@ package org.skypro.skyshop.Product.SimpleProduct;
 import org.skypro.skyshop.Product.Product;
 
 public class SimpleProduct extends Product {
-    private  int price;
+    private int price;
 
     public SimpleProduct(String name, int price) {
         super(name);
+        if (price <= 0) {
+            throw new IllegalArgumentException("Цена должна быть строго больше 0. Текущая цена: " + price);
+        }
         this.price = price;
     }
 
