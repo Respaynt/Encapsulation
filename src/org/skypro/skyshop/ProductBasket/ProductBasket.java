@@ -3,52 +3,50 @@ package org.skypro.skyshop.ProductBasket;
 import org.skypro.skyshop.Product.Product;
 
 public class ProductBasket {
-    public final Product[] products = new Product[5];
-    private int coint = 0;
+    private final Product[] products = new Product[5];
+    private int count = 0;
 
     public void addProduct(Product product) {
-        if (coint >= products.length) {
+        if (count >= products.length) {
             System.out.println("Корзина переполнена");
             return;
         }
-        products[coint++] = product;
-
+        products[count++] = product;
     }
 
     public int getTotalPrice() {
         int total = 0;
-        for (int i = 0; i < coint; i++) {
+        for (int i = 0; i < count; i++) {
             total += products[i].getPrice();
         }
         return total;
     }
 
-    public void PrintBasket() {
-        if (coint == 0) {
-            System.out.println("Корзина пустая");
+    public void printReceipt() {
+        if (count == 0) {
+            System.out.println("Корзина пуста");
             return;
         }
-        for (int i = 0; i < coint; i++) {
-            System.out.println(products[i].getName() + ": " + products[i].getPrice());
 
-        }
-        System.out.println("Итого: " + getTotalPrice());
+        int specialCount = 0;
 
-    }
-
-    public boolean containsProduct(String name) {
-        for (int i = 0; i < coint; i++) {
-            if (products[i].getName().equalsIgnoreCase(name)) {
-                return true;
+        for (int i = 0; i < count; i++) {
+            System.out.println(products[i]);
+            if (products[i].isSpecial()) {
+                specialCount++;
             }
         }
-        return false;
+
+        System.out.println("Итого: " + getTotalPrice() + " руб.");
+        System.out.println("Специальных товаров: " + specialCount);
     }
 
     public void clearBasket() {
-        for (int i = 0; i < coint; i++) {
+        for (int i = 0; i < count; i++) {
             products[i] = null;
         }
-        coint = 0;
+        count = 0;
     }
+
+
 }
