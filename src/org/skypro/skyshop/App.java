@@ -15,7 +15,7 @@ public class App {
         SearchEngine engine = new SearchEngine();
 
         Product p1 = new SimpleProduct("Сыр", 250);
-        Product p2 = new DiscountedProduct("Кофе", 360, 0.10);
+        Product p2 = new DiscountedProduct("Кофе", 365, 0.10);
         Product p3 = new FixPriceProduct("Торт");
 
         ProductBasket basket = new ProductBasket();
