@@ -2,62 +2,49 @@ package org.skypro.skyshop.Product.Article;
 
 import org.skypro.skyshop.Product.SimpleProduct.BestResultNotFound;
 
-public class SearchEngine {
-    private Searchable[] items;
-    private int size;
+import java.util.ArrayList;
+import java.util.List;
 
-    public SearchEngine(int capacity) {
-        items = new Searchable[capacity];
-        size = 0;
+public class SearchEngine {
+    private List<Searchable> items;
+
+    public SearchEngine() {
+        this.items = new ArrayList<>();
     }
 
     public void add(Searchable item) {
-        if (size < items.length) {
-            items[size] = item;
-            size++;
-        } else {
-            System.out.println("Переполнен");
-        }
+        items.add(item);
     }
 
-    public Searchable[] search(String query) {
-        Searchable[] results = new Searchable[size];  // Массив только нужного размера
-        int count = 0;
-
-        for (int i = 0; i < size; i++) {
-            if (items[i].getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
-                results[count] = items[i];
-                count++;
-                if (count == results.length) {
-                    break;
-                }
+    public List<Searchable> search(String query) {
+        List<Searchable> results = new ArrayList<>();
+        for (Searchable item : items) {
+            if (item.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
+                results.add(item);
             }
         }
-
-        Searchable[] finalResults = new Searchable[count];
-        System.arraycopy(results, 0, finalResults, 0, count);
-        return finalResults;
+        return results;
     }
 
-    public Searchable findBestMatch(String search) throws BestResultNotFound {
-        if (search == null || search.isEmpty()) {
+    public Searchable findBestMatch(String query) throws BestResultNotFound {
+        if (query == null || query.trim().isEmpty()) {
             throw new IllegalArgumentException("Поисковый запрос не может быть пустым");
         }
 
         int maxCount = -1;
         Searchable bestMatch = null;
 
-        for (int i = 0; i < size; i++) {
-            String term = items[i].getSearchTerm();
-            int count = countOccurrences(term.toLowerCase(), search.toLowerCase());
+        for (Searchable item : items) {
+            String term = item.getSearchTerm();
+            int count = countOccurrences(term.toLowerCase(), query.toLowerCase());
             if (count > maxCount) {
                 maxCount = count;
-                bestMatch = items[i];
+                bestMatch = item;
             }
         }
 
         if (bestMatch == null) {
-            throw new BestResultNotFound("Лучшее совпадение не найдено для запроса: " + search);
+            throw new BestResultNotFound("Лучшее совпадение не найдено для запроса: " + query);
         }
 
         return bestMatch;

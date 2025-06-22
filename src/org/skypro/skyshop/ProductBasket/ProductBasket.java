@@ -2,37 +2,38 @@ package org.skypro.skyshop.ProductBasket;
 
 import org.skypro.skyshop.Product.Product;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProductBasket {
-    private final Product[] products = new Product[5];
-    private int count = 0;
+    private List<Product> products;
+
+    public ProductBasket() {
+        products = new ArrayList<>();
+    }
 
     public void addProduct(Product product) {
-        if (count >= products.length) {
-            System.out.println("Корзина переполнена");
-            return;
-        }
-        products[count++] = product;
+        products.add(product);
     }
 
     public int getTotalPrice() {
         int total = 0;
-        for (int i = 0; i < count; i++) {
-            total += products[i].getPrice();
+        for (Product product : products) {
+            total += product.getPrice();
         }
         return total;
     }
 
     public void printReceipt() {
-        if (count == 0) {
+        if (products.isEmpty()) {
             System.out.println("Корзина пуста");
             return;
         }
 
         int specialCount = 0;
-
-        for (int i = 0; i < count; i++) {
-            System.out.println(products[i]);
-            if (products[i].isSpecial()) {
+        for (Product product : products) {
+            System.out.println(product);
+            if (product.isSpecial()) {
                 specialCount++;
             }
         }
@@ -42,11 +43,18 @@ public class ProductBasket {
     }
 
     public void clearBasket() {
-        for (int i = 0; i < count; i++) {
-            products[i] = null;
-        }
-        count = 0;
+        products.clear();
     }
-
+    public List<Product> removeByName(String name) {
+        List<Product> removed = new ArrayList<>();
+        products.removeIf(product -> {
+            if (product.getName().equalsIgnoreCase(name)) {
+                removed.add(product);
+                return true;
+            }
+            return false;
+        });
+        return removed;
+    }
 
 }

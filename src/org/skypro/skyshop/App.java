@@ -8,52 +8,18 @@ import org.skypro.skyshop.Product.SimpleProduct.BestResultNotFound;
 import org.skypro.skyshop.Product.SimpleProduct.SimpleProduct;
 import org.skypro.skyshop.ProductBasket.ProductBasket;
 
+import java.util.List;
+
 public class App {
     public static void main(String[] args) {
-        SearchEngine engine = new SearchEngine(10);
+        SearchEngine engine = new SearchEngine();
 
         Product p1 = new SimpleProduct("Сыр", 250);
         Product p2 = new DiscountedProduct("Кофе", 360, 0.10);
         Product p3 = new FixPriceProduct("Торт");
 
-        try {
-            Product p4 = new SimpleProduct(null, 3);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка при создании продукта: " + e.getMessage());
-        }
-
-        try {
-            Product p5 = new SimpleProduct("   ", 3);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка при создании продукта: " + e.getMessage());
-        }
-
-        try {
-            SimpleProduct p6 = new SimpleProduct("Товар", 0);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка при создании SimpleProduct: " + e.getMessage());
-        }
-
-        try {
-            SimpleProduct p7 = new SimpleProduct("Товар", -10);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка при создании SimpleProduct: " + e.getMessage());
-        }
-
-        try {
-            DiscountedProduct p8 = new DiscountedProduct("Скидочный товар", 100, 150);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка при создании DiscountedProduct: " + e.getMessage());
-        }
-
-        try {
-            DiscountedProduct p9 = new DiscountedProduct("Скидочный товар", 100, -5);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка при создании DiscountedProduct: " + e.getMessage());
-        }
-
         ProductBasket basket = new ProductBasket();
-        basket.addProduct(p1);
+
         basket.addProduct(p2);
         basket.addProduct(p3);
 
@@ -77,8 +43,35 @@ public class App {
         System.out.println("Чек:");
         basket.printReceipt();
 
-        basket.clearBasket();
+        System.out.println("Удаление продукта 'Сыр' из корзины:");
+        List<Product> removedProducts = basket.removeByName("Сыр");
+        if (removedProducts.isEmpty()) {
+            System.out.println("Список пуст");
+        } else {
+            System.out.println("Удаленные продукты:");
+            for (Product product : removedProducts) {
+                System.out.println(product);
+            }
+        }
 
+        System.out.println("Содержимое корзины после удаления:");
+        basket.printReceipt();
+
+        System.out.println("Удаление продукта 'Молоко' из корзины:");
+        List<Product> noProducts = basket.removeByName("Молоко");
+        if (noProducts.isEmpty()) {
+            System.out.println("Список пуст");
+        } else {
+            System.out.println("Удаленные продукты:");
+            for (Product product : noProducts) {
+                System.out.println(product);
+            }
+        }
+
+        System.out.println("Содержимое корзины после попытки удаления:");
+        basket.printReceipt();
+
+        basket.clearBasket();
 
         String searchQueryExisting = "Сыр и овощи";
         try {
@@ -97,26 +90,16 @@ public class App {
         }
     }
 
-
     private static void performSearch(SearchEngine engine, String query) {
         System.out.println("Поиск по запросу: " + query);
-        Searchable[] results = engine.search(query);
-        boolean found = false;
-        for (Searchable result : results) {
-            if (result != null) {
-                System.out.println(result.getStringRepresentation());
-                found = true;
-            }
-        }
-        if (!found) {
+        List<Searchable> results = engine.search(query);
+        if (results.isEmpty()) {
             System.out.println("Ничего не найдено.");
+            return;
+        }
+        for (Searchable result : results) {
+            System.out.println(result.getStringRepresentation());
         }
     }
 }
-
-
-
-
-
-
 
