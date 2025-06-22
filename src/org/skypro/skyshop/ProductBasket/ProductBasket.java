@@ -2,53 +2,59 @@ package org.skypro.skyshop.ProductBasket;
 
 import org.skypro.skyshop.Product.Product;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProductBasket {
-    public final Product[] products = new Product[5];
-    private int coint = 0;
+    private List<Product> products;
+
+    public ProductBasket() {
+        products = new ArrayList<>();
+    }
 
     public void addProduct(Product product) {
-        if (coint >= products.length) {
-            System.out.println("Корзина переполнена");
-            return;
-        }
-        products[coint++] = product;
-
+        products.add(product);
     }
 
     public int getTotalPrice() {
         int total = 0;
-        for (int i = 0; i < coint; i++) {
-            total += products[i].getPrice();
+        for (Product product : products) {
+            total += product.getPrice();
         }
         return total;
     }
 
-    public void PrintBasket() {
-        if (coint == 0) {
-            System.out.println("Корзина пустая");
+    public void printReceipt() {
+        if (products.isEmpty()) {
+            System.out.println("Корзина пуста");
             return;
         }
-        for (int i = 0; i < coint; i++) {
-            System.out.println(products[i].getName() + ": " + products[i].getPrice());
 
-        }
-        System.out.println("Итого: " + getTotalPrice());
-
-    }
-
-    public boolean containsProduct(String name) {
-        for (int i = 0; i < coint; i++) {
-            if (products[i].getName().equalsIgnoreCase(name)) {
-                return true;
+        int specialCount = 0;
+        for (Product product : products) {
+            System.out.println(product);
+            if (product.isSpecial()) {
+                specialCount++;
             }
         }
-        return false;
+
+        System.out.println("Итого: " + getTotalPrice() + " руб.");
+        System.out.println("Специальных товаров: " + specialCount);
     }
 
     public void clearBasket() {
-        for (int i = 0; i < coint; i++) {
-            products[i] = null;
-        }
-        coint = 0;
+        products.clear();
     }
+    public List<Product> removeByName(String name) {
+        List<Product> removed = new ArrayList<>();
+        products.removeIf(product -> {
+            if (product.getName().equalsIgnoreCase(name)) {
+                removed.add(product);
+                return true;
+            }
+            return false;
+        });
+        return removed;
+    }
+
 }
