@@ -3,23 +3,27 @@ package org.skypro.skyshop.ProductBasket;
 import org.skypro.skyshop.Product.Product;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductBasket {
-    private List<Product> products;
+    private Map<String, List<Product>> products;
 
     public ProductBasket() {
-        products = new ArrayList<>();
+        products = new HashMap<>();
     }
 
     public void addProduct(Product product) {
-        products.add(product);
+        products.computeIfAbsent(product.getName(),k -> new ArrayList<>()).add(product);
     }
 
     public int getTotalPrice() {
         int total = 0;
-        for (Product product : products) {
-            total += product.getPrice();
+        for (List<Product> productList : products.values()) {
+            for (Product product : productList) {
+                total += product.getPrice();
+            }
         }
         return total;
     }
@@ -31,10 +35,12 @@ public class ProductBasket {
         }
 
         int specialCount = 0;
-        for (Product product : products) {
-            System.out.println(product);
-            if (product.isSpecial()) {
-                specialCount++;
+        for (List<Product> productList : products.values()) {
+            for (Product product : productList) {
+                System.out.println(product);
+                if (product.isSpecial()) {
+                    specialCount++;
+                }
             }
         }
 
@@ -46,15 +52,8 @@ public class ProductBasket {
         products.clear();
     }
     public List<Product> removeByName(String name) {
-        List<Product> removed = new ArrayList<>();
-        products.removeIf(product -> {
-            if (product.getName().equalsIgnoreCase(name)) {
-                removed.add(product);
-                return true;
-            }
-            return false;
-        });
-        return removed;
+        return products.getOrDefault(name, new ArrayList<>());
+
     }
 
 }

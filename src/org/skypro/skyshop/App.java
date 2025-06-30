@@ -9,6 +9,7 @@ import org.skypro.skyshop.Product.SimpleProduct.SimpleProduct;
 import org.skypro.skyshop.ProductBasket.ProductBasket;
 
 import java.util.List;
+import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
@@ -92,12 +93,12 @@ public class App {
 
     private static void performSearch(SearchEngine engine, String query) {
         System.out.println("Поиск по запросу: " + query);
-        List<Searchable> results = engine.search(query);
+        Map<String, Searchable> results = engine.search(query);
         if (results.isEmpty()) {
             System.out.println("Ничего не найдено.");
             return;
         }
-        for (Searchable result : results) {
+        for (Searchable result : results.values()) {
             System.out.println(result.getStringRepresentation());
         }
     }

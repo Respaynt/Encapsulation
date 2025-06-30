@@ -3,7 +3,12 @@ package org.skypro.skyshop.Product.Article;
 import org.skypro.skyshop.Product.SimpleProduct.BestResultNotFound;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class SearchEngine {
     private List<Searchable> items;
@@ -16,14 +21,16 @@ public class SearchEngine {
         items.add(item);
     }
 
-    public List<Searchable> search(String query) {
-        List<Searchable> results = new ArrayList<>();
-        for (Searchable item : items) {
-            if (item.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
-                results.add(item);
-            }
-        }
-        return results;
+    public Map<String, Searchable> search(String query) {
+        return items.stream()
+                .filter(item -> item.getSearchTerm().toLowerCase().contains(query.toLowerCase()))
+                .sorted(Comparator.comparing(Searchable::getName))
+                .collect(Collectors.toMap(
+                        Searchable::getName,
+                        Function.identity(),
+                        (existing, replacement) -> existing,
+                        LinkedHashMap::new
+                ));
     }
 
     public Searchable findBestMatch(String query) throws BestResultNotFound {
