@@ -52,7 +52,7 @@ public class ProductBasket {
         products.clear();
     }
     public List<Product> removeByName(String name) {
-        return products.getOrDefault(name, new ArrayList<>());
+        return products.containsKey(name) ? products.remove(name) : new ArrayList<>();
 
     }
 

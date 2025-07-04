@@ -2,35 +2,31 @@ package org.skypro.skyshop.Product.Article;
 
 import org.skypro.skyshop.Product.SimpleProduct.BestResultNotFound;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SearchEngine {
-    private List<Searchable> items;
+    private final Set<Searchable> items;
 
     public SearchEngine() {
-        this.items = new ArrayList<>();
+        this.items = new HashSet<>();
     }
 
     public void add(Searchable item) {
         items.add(item);
     }
 
-    public Map<String, Searchable> search(String query) {
-        return items.stream()
-                .filter(item -> item.getSearchTerm().toLowerCase().contains(query.toLowerCase()))
-                .sorted(Comparator.comparing(Searchable::getName))
-                .collect(Collectors.toMap(
-                        Searchable::getName,
-                        Function.identity(),
-                        (existing, replacement) -> existing,
-                        LinkedHashMap::new
-                ));
+    public Set<Searchable> search(String query) {
+        Set<Searchable> results = new TreeSet<>(new SearchableComparator());
+
+        for (Searchable item : items) {
+            if (item.getClass().getSimpleName().toLowerCase().contains(query.toLowerCase())) {
+                results.add(item);
+            }
+        }
+
+        return results;
     }
 
     public Searchable findBestMatch(String query) throws BestResultNotFound {
