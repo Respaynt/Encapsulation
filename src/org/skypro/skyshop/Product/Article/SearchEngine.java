@@ -18,15 +18,11 @@ public class SearchEngine {
     }
 
     public Set<Searchable> search(String query) {
-        Set<Searchable> results = new TreeSet<>(new SearchableComparator());
+        List<Searchable> results = items.stream()
+                .filter(item -> item.getClass().getSimpleName().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList());
 
-        for (Searchable item : items) {
-            if (item.getClass().getSimpleName().toLowerCase().contains(query.toLowerCase())) {
-                results.add(item);
-            }
-        }
-
-        return results;
+        return Set.of();
     }
 
     public Searchable findBestMatch(String query) throws BestResultNotFound {
