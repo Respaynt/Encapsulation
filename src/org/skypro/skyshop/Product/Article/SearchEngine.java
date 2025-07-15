@@ -22,8 +22,7 @@ public class SearchEngine {
         }
 
         return items.stream()
-                .filter(item -> item.getClass().getSimpleName().toLowerCase().contains(query.toLowerCase())
-                        || item.getSearchTerm().toLowerCase().contains(query.toLowerCase()))
+                .filter (item -> item.getSearchTerm().toLowerCase().contains(query.toLowerCase()))
                 .collect(Collectors.toSet());
     }
 
