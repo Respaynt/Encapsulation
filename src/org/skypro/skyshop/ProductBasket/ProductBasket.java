@@ -15,17 +15,16 @@ public class ProductBasket {
     }
 
     public void addProduct(Product product) {
-        products.computeIfAbsent(product.getName(),k -> new ArrayList<>()).add(product);
+        products.computeIfAbsent(product.getName(), k -> new ArrayList<>()).add(product);
     }
 
     public int getTotalPrice() {
-        int total = 0;
-        for (List<Product> productList : products.values()) {
-            for (Product product : productList) {
-                total += product.getPrice();
-            }
-        }
-        return total;
+        return products.values().stream()
+                .flatMap(List::stream)
+                .mapToInt(Product::getPrice)
+                .sum();
+
+
     }
 
     public void printReceipt() {
@@ -33,26 +32,24 @@ public class ProductBasket {
             System.out.println("Корзина пуста");
             return;
         }
+        long specialCount = products.values().stream()
+                .flatMap(List::stream)
+                .peek(System.out::println)
+                .filter(Product::isSpecial)
+                .count();
 
-        int specialCount = 0;
-        for (List<Product> productList : products.values()) {
-            for (Product product : productList) {
-                System.out.println(product);
-                if (product.isSpecial()) {
-                    specialCount++;
-                }
-            }
-        }
 
         System.out.println("Итого: " + getTotalPrice() + " руб.");
         System.out.println("Специальных товаров: " + specialCount);
     }
 
+
     public void clearBasket() {
         products.clear();
     }
+
     public List<Product> removeByName(String name) {
-        return products.getOrDefault(name, new ArrayList<>());
+        return products.containsKey(name) ? products.remove(name) : new ArrayList<>();
 
     }
 
